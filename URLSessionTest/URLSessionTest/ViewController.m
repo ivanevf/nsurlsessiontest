@@ -75,14 +75,6 @@
   self.view = _view;
 }
 
-- (void)viewDidLoad {
-  [super viewDidLoad];
-}
-
-- (void)didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
-}
-
 - (void)uploadTestFile {
   NSURL *url = [NSURL URLWithString:@"http://localhost:8000"];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
