@@ -55,7 +55,8 @@
     NSError *error;
     NSLog(@"File location: %@", _filePath);
     if (![[NSFileManager defaultManager] fileExistsAtPath:_filePath]) {
-      [[NSFileManager defaultManager] moveItemAtPath:bundlePath toPath:_filePath error:&error];
+      NSLog(@"File does not exist. Copying.");
+      [[NSFileManager defaultManager] copyItemAtPath:bundlePath toPath:_filePath error:&error];
       if (error) {
         NSLog(@"Could not copy file. %@", error);
       }
@@ -76,7 +77,7 @@
 }
 
 - (void)uploadTestFile {
-  NSURL *url = [NSURL URLWithString:@"http://localhost:8000"];
+  NSURL *url = [NSURL URLWithString:@"http://0.upload.google.com/null"];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
                                                          cachePolicy:NSURLRequestReturnCacheDataElseLoad
                                                      timeoutInterval:60.0];
@@ -95,7 +96,7 @@
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
   NSLog(@" ---- sent %@ bytes sent out of %@ ----", @(bytesSent), @(totalBytesExpectedToSend));
-  [NSException raise:@"foo" format:@"bar"];
+  //[NSException raise:@"foo" format:@"bar"];
 }
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
