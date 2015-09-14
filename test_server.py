@@ -13,7 +13,8 @@ class TestHandler(BaseHTTPRequestHandler):
     def do_PUT(self):
         print "----- SOMETHING WAS PUT!! ------"
         print self.headers
-        self.send_response(200)
+        #self.send_response(200)
+        self.send_error(500)
 
     def do_GET(self):
         print "----- GET!!! ----"

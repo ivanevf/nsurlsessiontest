@@ -25,7 +25,7 @@
 
 @end
 
-@interface ViewController () <NSURLSessionDelegate, NSURLSessionTaskDelegate>
+@interface ViewController () <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 @end
 
 @implementation ViewController {
@@ -41,8 +41,9 @@
   self = [super init];
   if (self) {
     _opQueue = [NSOperationQueue mainQueue];
+    NSString *UUID = [[NSUUID UUID] UUIDString];
     NSURLSessionConfiguration *config =
-        [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"test.config"];
+        [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:UUID];
     _session =
         [NSURLSession
             sessionWithConfiguration:config
@@ -80,7 +81,7 @@
   NSURL *url = [NSURL URLWithString:@"http://0.upload.google.com/null"];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
                                                          cachePolicy:NSURLRequestReturnCacheDataElseLoad
-                                                     timeoutInterval:60.0];
+                                                     timeoutInterval:1.0];
   request.HTTPMethod = @"PUT";
   _sessionTask = [_session uploadTaskWithRequest:request fromFile:[NSURL fileURLWithPath:_filePath]];
   NSLog(@"--- uploading ----");
@@ -107,6 +108,27 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error {
   NSLog(@"URLSession:task:didCompleteWithError  ---  error %@", error);
+}
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+  NSLog(@"URLSession:dataTask:didReceiveResponse:completionHandler: -- response %@", response);
+}
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data {
+  NSString* dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  NSLog(@"URLSession:dataTask:didReceiveData: --- data %@", dataStr);
+}
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+ willCacheResponse:(NSCachedURLResponse *)proposedResponse
+ completionHandler:(void (^)(NSCachedURLResponse *cachedResponse))completionHandler {
+  NSLog(@"URLSession:dataTask:willCacheResponse:completionHandler: -- proposedResponse %@", proposedResponse);
 }
 
 @end
